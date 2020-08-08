@@ -29,20 +29,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.josetesan.poc</groupId>
-      <artifactId>service-loader-impl1</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.josetesan.poc</groupId>
-      <artifactId>service-loader-impl2</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
