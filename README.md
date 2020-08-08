@@ -1,6 +1,6 @@
 # Service-Loader on Spring-boot
 
-## HOW IT SHOULD BE ( Java8 or Less )
+##  Java8 or Less 
 0. Build it
 
    ```mvn package```
@@ -61,7 +61,7 @@
      20:18:14.203  INFO 13016 --- [main] com.josetesan.poc.serviceloader.App      : Null Handler
 ``` 
 
-## How it is ( Java9+ ) 
+## Java9+
 
 0. Build it
 
@@ -120,8 +120,8 @@ You'll see
  11:13:36.152  INFO 8318 --- [           main] c.j.p.s.SourceProcessorService           : Found 0
 
 ```
-2. Deploy new instance
-
+### Hot-Deployment 
+   
  - Copy your implementation's classes folder to current workdir
  - Copy your implementation's `META-INF/services` folder to current workdir,
 
@@ -168,20 +168,68 @@ You'll see
 
 
 ```
-
+And you'll see
 ```
  11:13:11.118  INFO 8318 --- [   scheduling-1] c.j.p.s.SourceProcessorService           : Reloading ....
  11:13:11.146  INFO 8318 --- [           main] c.j.p.s.SourceProcessorService           : Found 1
  11:13:11.146  INFO 8318 --- [           main] com.josetesan.poc.serviceloader.App      : Hello from Impl1
 ```  
-   
-   
-
+      
 ### Et voilá ! Runtime discovery :) ###
 
+### Cold-Deployment
+ In this method, you have to STOP the app and restart later once the new providers are deployed, but 
+ at least, you can deploy a jar file, without unpacking them.
+ 
+ 
+  Run your app with
+  ```
+   java -cp BOOT-INF/*:BOOT-INF/lib/*:plugins/*:. org.springframework.boot.loader.JarLauncher <parameters>
+  ```
 
-    
+  See the *plugins* extra entry in the classpath ? That's where you must deploy your implementations jar
+  ```
+├── BOOT-INF
+│ ├── classes
+│ │ └── com
+│ │     └── josetesan
+│ │         └── poc
+│ │             └── serviceloader
+│ │                 ├── App.class
+│ │                 ├── SourceProcessorService$1.class
+│ │                 └── SourceProcessorService.class
+│ ├── classpath.idx
+│ └── lib
+│     ├── spring-boot-2.3.2.RELEASE.jar
+      .
+      .
+      .
 
+├── META-INF
+│ ├── MANIFEST.MF
+│ ├── maven
+│ │ └── com.josetesan.poc
+│ │     └── service-loader-app
+│ │         ├── pom.properties
+│ │         └── pom.xml
+└── org
+    └── springframework
+        └── boot
+            └── loader
+              .
+              .
+              .
+└── plugins
+    ├── service-loader-impl1-0.0.1-SNAPSHOT.jar
+    └── service-loader-impl2-0.0.1-SNAPSHOT.jar
+
+```    
+
+Remember , *before removing* ANY jar file in the plugins folder, you *HAVE to stop* the application, 
+otherwise, it might crash.
+You don't need to stop it in case you want to ADD a jar, but it won't pick it up until you restart the app.
+
+That's great, because you can schedule application stops ... 
 
     
 
