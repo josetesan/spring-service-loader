@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Arrays;
+import java.util.ServiceConfigurationError;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -26,9 +27,13 @@ public class App implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         while (true) {
-            int type = Integer.parseInt(Arrays.asList(args).get(0));
-            log.info("{}", sourceProcessorService.handleEvent(type));
-            TimeUnit.SECONDS.sleep(5);
+            try {
+                int type = Integer.parseInt(Arrays.asList(args).get(0));
+                log.info("{}", sourceProcessorService.handleEvent(type));
+                TimeUnit.SECONDS.sleep(5);
+            } catch (ServiceConfigurationError e) {
+                log.error("Missing configuration, retrying ...", e.getLocalizedMessage());
+            }
         }
     }
 }
