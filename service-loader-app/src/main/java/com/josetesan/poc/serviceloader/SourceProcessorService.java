@@ -1,6 +1,5 @@
-package com.josetesan.poc.serviceloader.config;
+package com.josetesan.poc.serviceloader;
 
-import com.josetesan.poc.serviceloader.SourceProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,21 +10,25 @@ import java.util.ServiceLoader;
 @Slf4j
 public class SourceProcessorService {
 
-    private final Loader loader;
+    private final ServiceLoader<SourceProcessor> serviceLoader;
 
-    public SourceProcessorService(Loader loader) {
-        this.loader = loader;
+    public SourceProcessorService() {
+        serviceLoader = ServiceLoader.load(SourceProcessor.class);
+        log.info("{}", serviceLoader.stream().count());
     }
 
     @Scheduled(fixedRate = 10_000)
     public void refresh() {
         log.info("Reloading ....");
-        loader.reload();
+        serviceLoader.reload();
     }
 
     public String handleEvent(int type) {
-        SourceProcessor sourceProcessor = loader
-                    .retrieve()
+
+        log.info("Found {}",serviceLoader.stream().count());
+
+        SourceProcessor sourceProcessor = serviceLoader
+                    .stream()
                     .filter(p -> p.get().doesHandle(type))
                     .map(ServiceLoader.Provider::get)
                     .findFirst()
