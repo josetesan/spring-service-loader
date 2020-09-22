@@ -121,7 +121,7 @@ And you'll see
  
   Run your app with
   ```
-   java -Dloader.path="plugins/" target/*.jar
+   java -Dloader.path="plugins/" -jar target/*.jar
   ```
 
   See the *plugins* extra entry in the classpath ? That's where you must deploy your implementations jar
